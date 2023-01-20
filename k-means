@@ -1,0 +1,51 @@
+# K means clustering
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+data = pd.read_csv('Mall_Customers.csv.xls')
+data.head()
+
+data.isnull().any()
+
+data.isnull().sum()
+
+data=data.fillna(0)
+
+data.isnull().sum()
+
+x = data.iloc[:, 3:5].values
+
+from sklearn.cluster import KMeans
+wcss = []
+for i in range(1, 11):
+    kmeans = KMeans(n_clusters = i)
+    kmeans.fit(x)
+    wcss.append(kmeans.inertia_)   
+plt.plot(range(1, 11), wcss)
+plt.title('The Elbow Method')
+plt.xlabel('No. of Clusters')
+plt.ylabel('wcss')
+plt.show()
+
+km = KMeans(n_clusters = 5, init = 'k-means++', max_iter = 300, n_init = 10, random_state = 0)
+y_means = km.fit_predict(x)
+
+plt.scatter(x[y_means == 0, 0], x[y_means == 0, 1], s = 100, c = 'pink', label = 'C1:Kanjoos')
+plt.scatter(x[y_means == 1, 0], x[y_means == 1, 1], s = 100, c = 'yellow', label = 'C2:Average')
+plt.scatter(x[y_means == 2, 0], x[y_means == 2, 1], s = 100, c = 'cyan', label = 'C3:Bakra/Target')
+plt.scatter(x[y_means == 3, 0], x[y_means == 3, 1], s = 100, c = 'magenta', label = 'C4:Pokiri')
+plt.scatter(x[y_means == 4, 0], x[y_means == 4, 1], s = 100, c = 'orange', label = 'C5:Intelligent')
+plt.scatter(km.cluster_centers_[:,0], km.cluster_centers_[:, 1], s = 50, c = 'blue' , label = 'centeroid')
+plt.title('K Means Clustering')
+plt.xlabel('Annual Income')
+plt.ylabel('Spending Score')
+plt.legend()
+plt.show()
+
+km.inertia_
+
+km.cluster_centers_
+
+
